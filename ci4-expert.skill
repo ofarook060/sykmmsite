@@ -1,0 +1,48 @@
+# Name: codeigniter-4-expert
+# Description: Rules and architectural blueprints for developing, testing, and securing applications using CodeIgniter 4.
+
+## 1. System Architecture & Routing
+* **Strict MVC Separation:** Never write raw SQL or heavy logic inside Controllers; offload them to Models or Service layers.
+* **Explicit Routing Only:** Disable auto-routing in `Config/Routes.php` (`$routes->setAutoRoute(false);`). Always define explicit HTTP verb routes (`$routes->get()`, `$routes->post()`, `$routes->presenter()`).
+* **Filters over Middleware:** Use `App\Filters` for cross-cutting concerns like Authentication, CORS handling, and CSRF verification.
+* **Environment Isolation:** Never hardcode credentials. Enforce reading from the `.env` file via `env()` or `config()`.
+
+## 2. Database & Data Modeling (DB)
+* **Model Configuration:** Models must explicitly extend `CodeIgniter\Model` and define `$table`, `$primaryKey`, `$allowedFields`, and `$returnType` (prefer entities or arrays).
+* **Entities for Business Logic:** Use `CodeIgniter\Entity\Entity` to map database rows to objects. Handle data mutation/casting inside the Entity class.
+* **Query Builder over Raw SQL:** Use `$this->db->table()` or the built-in model query builder to enforce automatic parameter binding and prevent SQL Injection.
+* **Safe Migrations:** Database schema changes must only be executed via `php spark migrate:create` and run using the `up()` and `down()` methods. Never run manual structural queries.
+
+## 3. RESTful API Development
+* **Resource Controllers:** Extend `CodeIgniter\RESTful\ResourceController` or `ResourcePresenter` for REST endpoints to automate routing actions.
+* **Standardized JSON Responses:** Use the `CodeIgniter\API\ResponseTrait`. Use `$this->respond()`, `$this->failNotFound()`, or `$this->failValidationError()` to return correct HTTP status codes.
+* **API Authentication:** Rely strictly on the official `CodeIgniter\Shield` library using Access Tokens (`$user->generateAccessToken()`) for stateless operations.
+* **Throttling:** Apply the built-in `Throttler` filter to all public API endpoints to prevent brute-force attacks and rate-limit abuses.
+
+## 4. User Interface & View Layer (UI)
+* **View Cells for Reusability:** Break down complex UI layouts (menus, widgets) into independent view cells using `view_cell()`.
+* **Output Escaping:** To eliminate Cross-Site Scripting (XSS), wrap all dynamic outputs in views with the native `esc($variable, 'html')` or appropriate context (`'js'`, `'css'`).
+* **Form Helpers:** Use `form_open()` and `form_close()` to guarantee that secure, hidden form structures are consistently rendered.
+* **Asset Management:** Store public assets (CSS, JS, Images) strictly in the `/public` directory. Reference them using `base_url()`.
+
+## 5. Security & Request Validation
+* **CSRF Enforcement:** Ensure CSRF protection is active in `Config/Filters.php`. Include `<?= csrf_field() ?>` inside every single HTML form submission.
+* **Strict Validation Rules:** Validate all incoming POST/GET requests inside the controller or model using the validation service:
+  ```php
+  \$rules = [
+      'email' => 'required|valid_email|is_unique[users.email]',
+      'password' => 'required|min_length[8]'
+  ];
+  if (!this->validate(rules)) {
+      return this->fail(this->validator->getErrors());
+  }
+  ```
+* **Secure File Processing:** Handle file uploads using the `UploadedFile` framework class. Always validate mime-types and file extensions before saving using `$file->getRandomName()`.
+
+## 6. Code Generation & Tooling
+* **Spark CLI:** Always prioritize generating files through the command line to maintain correct namespaces:
+  * `php spark make:controller <Name>`
+  * `php spark make:model <Name>`
+  * `php spark make:migration <Name>`
+  * `php spark make:filter <Name>`
+
