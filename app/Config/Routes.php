@@ -19,6 +19,27 @@ $routes->get('posts', 'Posts::index');
 $routes->get('post/(:num)', 'Posts::view/$1');
 $routes->get('posts/create', 'Posts::create');
 $routes->post('posts/create', 'Posts::create');
+
 $routes->get('admin/dashboard', 'Admin::dashboard');
 $routes->get('/', 'Home::index');
+
+// Dedicated group for your React Native Mobile App
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    // Maps GET /api/properties to index()
+    $routes->get('properties', 'Properties::index');
+    
+    // Maps GET /api/properties/1 to show(1)
+    $routes->get('properties/(:num)', 'Properties::show/$1');
+});
+
+// Dedicated namespace group for your React Native Mobile App
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    // Properties routes
+    $routes->get('properties', 'Properties::index');
+    $routes->get('properties/(:num)', 'Properties::show/$1');
+    
+    // Posts endpoints
+    $routes->get('posts', 'Posts::index');
+    $routes->get('posts/(:num)', 'Posts::show/$1');
+});
 
