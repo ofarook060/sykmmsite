@@ -19,6 +19,17 @@ class Posts extends BaseController {
         return view('posts/index', $data);
     }
 
+    // Public: View a single post for web visitors
+    public function view($id) {
+        $model = new PostModel();
+        $data['post'] = $model->find($id);
+
+        if (!$data['post']) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+        return view('posts/view', $data);
+    }
+
     // Admin/Mobile: Create a new blog post
     public function create() {
         $isJsonRequest = $this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json';
