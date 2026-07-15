@@ -43,14 +43,4 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->get('posts/(:num)', 'Posts::show/$1');
 });
 
-$routes->group('api', function($routes) {
-    // Your existing routes:
-    // $routes->resource('posts');
-    // $routes->resource('properties');
-
-    // Add your new Admin API dashboard 
-route:
-    $routes->get('admin/dashboard', 
-'Api\AdminController::dashboard');
-});
 
