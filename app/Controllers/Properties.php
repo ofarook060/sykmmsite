@@ -47,7 +47,7 @@ class Properties extends BaseController {
     }
 
     public function create() {
-        // Handle Mobile API Submissions (JSON data)
+        // Handle Mobile API Submissions (JSON data or multipart)
         $isJsonRequest = $this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json';
 
         // Protect route via manual session check (Only for web browsers)
@@ -57,30 +57,21 @@ class Properties extends BaseController {
 
         if ($this->request->is('post')) {
             $model = new PropertyModel();
-            $uploadedImages = [];
-
-            // Image handling (Supported for traditional multi-part form submissions)
-            if ($imageFiles = $this->request->getFiles()) {
-                if (isset($imageFiles['property_images'])) {
-                    foreach ($imageFiles['property_images'] as $img) {
-                        if ($img->isValid() && !$img->hasMoved()) {
-                            $newName = $img->getRandomName();
-                            $targetPath = ROOTPATH . 'public/uploads/';
-                            $img->move($targetPath, $newName);
-
-                            // Image Optimization & Auto-Resize
-                            \Config\Services::image()
-                                ->withFile($targetPath . $newName)
-                                ->resize(800, 600, true, 'height')
-                                ->save($targetPath . $newName);
-
-                            $uploadedImages[] = $newName;
-                        }
-                    }
-                }
+            
+            // New Image handling logic for mobile multipart/form-data
+            $imagePath = null;
+            $file = $this->request->getFile('images'); // Matches key in Mobile App's FormData
+            
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $targetPath = ROOTPATH . 'public/uploads/';
+                $file->move($targetPath, $newName);
+                
+                // Store path in DB. Existing code expects JSON array.
+                $imagePath = json_encode(['/uploads/' . $newName]);
             }
 
-            // Pull fields dynamically (Works for both JSON bodies and traditional $_POST forms)
+            // Pull fields dynamically
             $propertyData = [
                 'title'          => $this->request->getVar('title'),
                 'location'       => $this->request->getVar('location'),
@@ -92,7 +83,7 @@ class Properties extends BaseController {
                 'bathrooms'      => $this->request->getVar('bathrooms'),
                 'description'    => $this->request->getVar('description'),
                 'facebookPost'   => $this->request->getVar('facebookPost'),
-                'images'         => !empty($uploadedImages) ? json_encode($uploadedImages) : null
+                'images'         => $imagePath
             ];
 
             if ($model->save($propertyData)) {

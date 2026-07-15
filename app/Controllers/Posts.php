@@ -1,59 +1,96 @@
 <?php
 namespace App\Controllers;
 use App\Models\PostModel;
+use CodeIgniter\API\ResponseTrait;
 
 class Posts extends BaseController {
+    use ResponseTrait;
 
-    // Public: List all blog posts for web visitors
+    // Public: List all blog posts
     public function index() {
         $model = new PostModel();
-        $data['posts'] = $model->findAll();
+        $posts = $model->findAll();
+
+        if ($this->request->isAJAX() || $this->request->getGet('format') === 'json') {
+            return $this->respond($posts);
+        }
+
+        $data['posts'] = $posts;
         return view('posts/index', $data);
     }
 
-    // Public: View a single post for web visitors
-    public function view($id) {
-        $model = new PostModel();
-        $data['post'] = $model->find($id);
-
-        if (!$data['post']) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-        }
-        return view('posts/view', $data);
-    }
-
-    // Admin Only: Create a new blog post via web dashboard
+    // Admin/Mobile: Create a new blog post
     public function create() {
-        if (!session()->get('isAdminLoggedIn')) {
-            return redirect()->to('/login')->with('error', 'Please log in to manage posts.');
+        $isJsonRequest = $this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json';
+
+        if (!$isJsonRequest && !session()->get('isAdminLoggedIn')) {
+            return redirect()->to('/login');
         }
 
         if ($this->request->is('post')) {
             $model = new PostModel();
-            $imageName = null;
-
-            $file = $this->request->getFile('blog_image');
+            
+            // New Image handling logic for mobile multipart/form-data
+            $imagePath = null;
+            $file = $this->request->getFile('images'); // Matches key in Mobile App's FormData
+            
             if ($file && $file->isValid() && !$file->hasMoved()) {
-                $imageName = $file->getRandomName();
+                $newName = $file->getRandomName();
                 $targetPath = ROOTPATH . 'public/uploads/blog/';
-                $file->move($targetPath, $imageName);
-
-                \Config\Services::image()
-                    ->withFile($targetPath . $imageName)
-                    ->resize(800, 500, true, 'width')
-                    ->save($targetPath . $imageName);
+                $file->move($targetPath, $newName);
+                $imagePath = '/uploads/blog/' . $newName;
             }
 
-            $model->save([
-                'title'   => $this->request->getPost('title'),
-                'content' => $this->request->getPost('content'),
-                'images'  => $imageName
-            ]);
+            $postData = [
+                'title'   => $this->request->getVar('title'),
+                'content' => $this->request->getVar('content'),
+                'images'  => $imagePath
+            ];
 
-            return redirect()->to('/posts')->with('success', 'Post published successfully!');
+            if ($model->save($postData)) {
+                if ($isJsonRequest) {
+                    return $this->respondCreated(['status' => true, 'message' => 'Post created successfully']);
+                }
+                return redirect()->to('/posts')->with('success', 'Post published successfully!');
+            }
+
+            if ($isJsonRequest) {
+                return $this->fail('Failed to save post');
+            }
         }
 
         return view('posts/create');
+    }
+
+    // Admin/Mobile: Update an existing post
+    public function update($id = null) {
+        $model = new PostModel();
+        
+        $post = $model->find($id);
+        if (!$post) return $this->failNotFound('Post not found');
+
+        $imagePath = $post['images']; // Keep existing
+        $file = $this->request->getFile('images');
+        
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $targetPath = ROOTPATH . 'public/uploads/blog/';
+            $file->move($targetPath, $newName);
+            $imagePath = '/uploads/blog/' . $newName;
+        }
+
+        $postData = [
+            'id'      => $id,
+            'title'   => $this->request->getVar('title') ?? $post['title'],
+            'content' => $this->request->getVar('content') ?? $post['content'],
+            'images'  => $imagePath
+        ];
+
+        if ($model->save($postData)) {
+            return $this->respond(['status' => true, 'message' => 'Post updated successfully']);
+        }
+        
+        return $this->fail('Failed to update post');
     }
 }
 
