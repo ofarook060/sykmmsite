@@ -74,16 +74,16 @@ class Properties extends BaseController {
             // Pull fields dynamically
             $propertyData = [
                 'title'          => $this->request->getVar('title'),
+                'images'         => $imagePath,
                 'location'       => $this->request->getVar('location'),
-                'price'          => $this->request->getVar('price'),
                 'size'           => $this->request->getVar('size'),
+                'price'          => $this->request->getVar('price'),
                 'rooms'          => $this->request->getVar('rooms'),
                 'masterBedrooms' => $this->request->getVar('masterBedrooms'),
                 'bedrooms'       => $this->request->getVar('bedrooms'),
                 'bathrooms'      => $this->request->getVar('bathrooms'),
                 'description'    => $this->request->getVar('description'),
                 'facebookPost'   => $this->request->getVar('facebookPost'),
-                'images'         => $imagePath
             ];
 
             if ($model->save($propertyData)) {
