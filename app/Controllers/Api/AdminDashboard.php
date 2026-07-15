@@ -17,6 +17,7 @@ class AdminDashboard extends BaseApiController
             'data' => [
                 'total_properties' => $propertyModel->countAllResults(),
                 'total_posts' => $postModel->countAllResults(),
+                'recent_posts' => $postModel->orderBy('id', 'DESC')->findAll(5),
             ]
         ]);
     }
