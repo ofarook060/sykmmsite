@@ -2,50 +2,53 @@
 
 namespace App\Controllers\Api;
 
-// Use ResourceController instead of BaseController for RESTful APIs
 use CodeIgniter\RESTful\ResourceController;
 use App\Models\PropertyModel;
 
 class Properties extends ResourceController
 {
-    // Tells the ResourceController to return JSON automatically
     protected $format = 'json'; 
 
-    /**
-     * Return all properties
-     * GET /api/properties
-     */
     public function index()
     {
         $model = new PropertyModel();
-        $properties = $model->findAll();
-
-        if (empty($properties)) {
-            return $this->failNotFound('No properties found');
-        }
-
-        return $this->respond($properties);
+        return $this->respond($model->findAll());
     }
 
-    /**
-     * Return a single property details
-     * GET /api/properties/{id}
-     */
     public function show($id = null)
     {
         $model = new PropertyModel();
         $property = $model->find($id);
-
-        if (!$property) {
-            return $this->failNotFound('Property not found');
-        }
-
-        // Auto decode image strings if present
-        if (!empty($property['images'])) {
-            $property['images'] = json_decode($property['images']);
-        }
-
+        if (!$property) return $this->failNotFound('Property not found');
         return $this->respond($property);
     }
-}
 
+    public function create()
+    {
+        $model = new PropertyModel();
+        $data = $this->request->getJSON(true);
+        if ($model->save($data)) {
+            return $this->respondCreated(['status' => 'success', 'message' => 'Property created']);
+        }
+        return $this->fail($model->errors());
+    }
+
+    public function update($id = null)
+    {
+        $model = new PropertyModel();
+        $data = $this->request->getJSON(true);
+        if ($model->update($id, $data)) {
+            return $this->respond(['status' => 'success', 'message' => 'Property updated']);
+        }
+        return $this->fail($model->errors());
+    }
+
+    public function delete($id = null)
+    {
+        $model = new PropertyModel();
+        if ($model->delete($id)) {
+            return $this->respondDeleted(['status' => 'success', 'message' => 'Property deleted']);
+        }
+        return $this->fail('Failed to delete');
+    }
+}

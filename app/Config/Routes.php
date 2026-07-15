@@ -46,3 +46,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->post('admin/login', 'AdminAuth::login');
     $routes->get('admin/dashboard', 'AdminDashboard::index');
 });
+
+// Updated RESTful API Routes
+$routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->resource('properties');
+    $routes->resource('posts');
+});
