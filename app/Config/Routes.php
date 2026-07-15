@@ -41,4 +41,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     // Posts endpoints
     $routes->get('posts', 'Posts::index');
     $routes->get('posts/(:num)', 'Posts::show/$1');
+    
+    // Admin API endpoints
+    $routes->post('admin/login', 'AdminAuth::login');
+    $routes->get('admin/dashboard', 'AdminDashboard::index');
 });
