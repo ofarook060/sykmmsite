@@ -12,9 +12,8 @@ class Properties extends BaseController {
         $model = new PropertyModel();
         $properties = $model->findAll();
 
-        // 3. Handle Content Negotiation
-        // If request wants JSON (like React Native), send JSON. Otherwise, send web view.
-        if ($this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json' || $this->request->getGet('format') === 'json') {
+        // Enforce JSON for API routes
+        if (strpos($this->request->getPath(), 'api/') === 0 || $this->request->getGet('format') === 'json') {
             return $this->respond($properties);
         }
 

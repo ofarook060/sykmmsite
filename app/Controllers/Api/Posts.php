@@ -11,6 +11,7 @@ class Posts extends ResourceController
 
     public function index()
     {
+        $this->response->setContentType('application/json');
         $model = new PostModel();
         return $this->respond($model->findAll());
     }

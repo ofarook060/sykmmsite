@@ -11,7 +11,8 @@ class Posts extends BaseController {
         $model = new PostModel();
         $posts = $model->findAll();
 
-        if ($this->request->isAJAX() || $this->request->getGet('format') === 'json') {
+        // Enforce JSON for API routes
+        if (strpos($this->request->getPath(), 'api/') === 0 || $this->request->isAJAX() || $this->request->getGet('format') === 'json') {
             return $this->respond($posts);
         }
 

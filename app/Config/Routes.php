@@ -20,9 +20,8 @@ $routes->post('posts/create', 'Posts::create');
 $routes->get('admin/dashboard', 'Admin::dashboard');
 $routes->get('/', 'Home::index');
 
-// API routes using App\Controllers namespace instead of App\Controllers\Api
-// because the controllers I updated (Properties.php and Posts.php) are in Controllers/
+// API routes using App\Controllers\Api namespace to ensure JSON response handling.
 $routes->group('api', function($routes) {
-    $routes->resource('properties', ['controller' => 'Properties']);
-    $routes->resource('posts', ['controller' => 'Posts']);
+    $routes->resource('properties', ['controller' => 'Api\Properties']);
+    $routes->resource('posts', ['controller' => 'Api\Posts']);
 });

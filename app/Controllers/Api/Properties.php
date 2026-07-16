@@ -11,6 +11,7 @@ class Properties extends ResourceController
 
     public function index()
     {
+        $this->response->setContentType('application/json');
         $model = new PropertyModel();
         return $this->respond($model->findAll());
     }
