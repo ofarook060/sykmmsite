@@ -24,4 +24,5 @@ $routes->get('/', 'Home::index');
 $routes->group('api', function($routes) {
     $routes->resource('properties', ['controller' => 'Api\Properties']);
     $routes->resource('posts', ['controller' => 'Api\Posts']);
+    $routes->get('admin-dashboard', 'Api\AdminDashboard::index');
 });

@@ -9,6 +9,7 @@ class AdminDashboard extends BaseApiController
 {
     public function index()
     {
+        log_message('debug', 'AdminDashboard::index reached');
         $propertyModel = new PropertyModel();
         $postModel = new PostModel();
 
