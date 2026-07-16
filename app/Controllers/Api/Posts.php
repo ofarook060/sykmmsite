@@ -27,7 +27,23 @@ class Posts extends ResourceController
     public function create()
     {
         $model = new PostModel();
-        $data = $this->request->getJSON(true);
+        
+        // Handle image upload
+        $imagePath = null;
+        $file = $this->request->getFile('images');
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            // Ensure this directory exists in the backend
+            $file->move(ROOTPATH . 'public/uploads/blog/', $newName);
+            $imagePath = '/uploads/blog/' . $newName;
+        }
+
+        $data = [
+            'title'   => $this->request->getVar('title'),
+            'content' => $this->request->getVar('content'),
+            'images'  => $imagePath
+        ];
+
         if ($model->save($data)) {
             return $this->respondCreated(['status' => 'success', 'message' => 'Post created']);
         }
@@ -37,7 +53,25 @@ class Posts extends ResourceController
     public function update($id = null)
     {
         $model = new PostModel();
-        $data = $this->request->getJSON(true);
+        
+        $post = $model->find($id);
+        if (!$post) return $this->failNotFound('Post not found');
+
+        $imagePath = $post['images']; // Keep existing
+        $file = $this->request->getFile('images');
+        
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/blog/', $newName);
+            $imagePath = '/uploads/blog/' . $newName;
+        }
+
+        $data = [
+            'title'   => $this->request->getVar('title') ?? $post['title'],
+            'content' => $this->request->getVar('content') ?? $post['content'],
+            'images'  => $imagePath
+        ];
+
         if ($model->update($id, $data)) {
             return $this->respond(['status' => 'success', 'message' => 'Post updated']);
         }

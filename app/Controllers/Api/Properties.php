@@ -27,7 +27,30 @@ class Properties extends ResourceController
     public function create()
     {
         $model = new PropertyModel();
-        $data = $this->request->getJSON(true);
+        
+        // Handle image upload
+        $imagePath = null;
+        $file = $this->request->getFile('images');
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/properties/', $newName);
+            $imagePath = '/uploads/properties/' . $newName;
+        }
+
+        $data = [
+            'title'           => $this->request->getVar('title'),
+            'location'        => $this->request->getVar('location'),
+            'price'           => $this->request->getVar('price'),
+            'size'            => $this->request->getVar('size'),
+            'rooms'           => $this->request->getVar('rooms'),
+            'masterBedrooms'  => $this->request->getVar('masterBedrooms'),
+            'bedrooms'        => $this->request->getVar('bedrooms'),
+            'bathrooms'       => $this->request->getVar('bathrooms'),
+            'description'     => $this->request->getVar('description'),
+            'facebookPost'    => $this->request->getVar('facebookPost'),
+            'images'          => $imagePath
+        ];
+
         if ($model->save($data)) {
             return $this->respondCreated(['status' => 'success', 'message' => 'Property created']);
         }
@@ -37,7 +60,33 @@ class Properties extends ResourceController
     public function update($id = null)
     {
         $model = new PropertyModel();
-        $data = $this->request->getJSON(true);
+        
+        $property = $model->find($id);
+        if (!$property) return $this->failNotFound('Property not found');
+
+        $imagePath = $property['images'];
+        $file = $this->request->getFile('images');
+        
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $file->move(ROOTPATH . 'public/uploads/properties/', $newName);
+            $imagePath = '/uploads/properties/' . $newName;
+        }
+
+        $data = [
+            'title'           => $this->request->getVar('title') ?? $property['title'],
+            'location'        => $this->request->getVar('location') ?? $property['location'],
+            'price'           => $this->request->getVar('price') ?? $property['price'],
+            'size'            => $this->request->getVar('size') ?? $property['size'],
+            'rooms'           => $this->request->getVar('rooms') ?? $property['rooms'],
+            'masterBedrooms'  => $this->request->getVar('masterBedrooms') ?? $property['masterBedrooms'],
+            'bedrooms'        => $this->request->getVar('bedrooms') ?? $property['bedrooms'],
+            'bathrooms'       => $this->request->getVar('bathrooms') ?? $property['bathrooms'],
+            'description'     => $this->request->getVar('description') ?? $property['description'],
+            'facebookPost'    => $this->request->getVar('facebookPost') ?? $property['facebookPost'],
+            'images'          => $imagePath
+        ];
+
         if ($model->update($id, $data)) {
             return $this->respond(['status' => 'success', 'message' => 'Property updated']);
         }
