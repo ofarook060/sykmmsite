@@ -16,8 +16,9 @@
     </style>
 </head>
 <body>
+    <?= view('partials/header') ?>
+    <main style="padding: 20px;">
     <h1>Latest Updates & News</h1>
-    
     <?php if(session()->getFlashdata('success')): ?>
         <p style="color: green;"><?= session()->getFlashdata('success') ?></p>
     <?php endif; ?>
@@ -30,7 +31,7 @@
                 <h2><?= esc($post['title']) ?></h2>
 
                 <?php if (!empty($post['images'])): ?>
-                    <img src="/uploads/blog/<?= esc($post['images']) ?>" width="300" alt="Blog Image"><br>
+                    <img src="<?= esc($post['images']) ?>" width="300" alt="Blog Image"><br>
                 <?php endif; ?>
 
                 <p><?= character_limiter(esc($post['content']), 150) ?></p>
@@ -39,6 +40,7 @@
             <hr>
         <?php endforeach; ?>
     <?php endif; ?>
+    </main>
 </body>
 </html>
 

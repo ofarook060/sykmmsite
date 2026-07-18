@@ -74,8 +74,52 @@ class Posts extends BaseController {
         return view('posts/create');
     }
 
+    // Admin: Edit a blog post
+    public function edit($id = null) {
+        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
+
+        $model = new PostModel();
+        $post = $model->find($id);
+        if (!$post) throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+
+        if ($this->request->is('post')) {
+            $imagePath = $post['images']; // Keep existing
+            $file = $this->request->getFile('images');
+            
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $targetPath = ROOTPATH . 'public/uploads/blog/';
+                $file->move($targetPath, $newName);
+                $imagePath = '/uploads/blog/' . $newName;
+            }
+
+            $postData = [
+                'id'      => $id,
+                'title'   => $this->request->getVar('title'),
+                'content' => $this->request->getVar('content'),
+                'images'  => $imagePath
+            ];
+
+            if ($model->save($postData)) {
+                return redirect()->to('/admin/dashboard')->with('success', 'Post updated successfully!');
+            }
+        }
+
+        return view('posts/edit', ['post' => $post]);
+    }
+
+    // Admin: Delete a blog post
+    public function delete($id = null) {
+        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
+        
+        $model = new PostModel();
+        $model->delete($id);
+        return redirect()->to('/admin/dashboard')->with('success', 'Post deleted!');
+    }
+
     // Admin/Mobile: Update an existing post
     public function update($id = null) {
+
         $model = new PostModel();
         
         $post = $model->find($id);

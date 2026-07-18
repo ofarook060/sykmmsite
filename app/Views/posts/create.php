@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><title>Create Post</title></head>
-<body>
+<body><?= view("partials/header") ?>
     <h1>Create a New Post</h1>
 
     <form action="/posts/create" method="post" enctype="multipart/form-data">

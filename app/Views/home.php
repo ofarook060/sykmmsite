@@ -41,14 +41,8 @@
 </head>
 <body>
 
-    <header>
-        <a href="/" class="logo">SYK Services</a>
-        <nav>
-            <a href="/properties">Properties</a>
-            <a href="/posts">Blog</a>
-            <a href="/login">Admin Login</a>
-        </nav>
-    </header>
+    <?= view('partials/header') ?>
+
 
     <div class="hero">
         <h1>Find Your Perfect Dynamic Living Space</h1>
@@ -79,7 +73,7 @@
                     <div class="card">
                         <?php 
                         $images = json_decode($prop['images'] ?? '', true);
-                        $imgSrc = (!empty($images) && is_array($images)) ? '/uploads/' . $images[0] : '';
+                        $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
                         ?>
                         <img src="<?= esc($imgSrc) ?>" class="card-img" alt="Property Image">
                         <div class="card-body">
@@ -102,7 +96,7 @@
                 <?php foreach ($latest_posts as $post): ?>
                     <div class="card">
                         <?php 
-                        $imgSrc = !empty($post['images']) ? '/uploads/blog/' . $post['images'] : '';
+                        $imgSrc = !empty($post['images']) ? $post['images'] : '';
                         ?>
                         <img src="<?= esc($imgSrc) ?>" class="card-img" alt="Blog Image">
                         <div class="card-body">

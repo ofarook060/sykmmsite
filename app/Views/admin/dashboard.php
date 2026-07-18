@@ -21,11 +21,13 @@
     </style>
 </head>
 <body>
-
+    <?= view('partials/header') ?>
+    <div style="padding: 20px;">
     <div class="dashboard-header">
         <h1>Welcome Back, <?= esc(session()->get('username')) ?></h1>
         <a href="/logout" class="btn btn-logout">Logout</a>
     </div>
+
 
     <!-- Stats Summary Cards -->
     <div class="stats-grid">
@@ -60,6 +62,7 @@
                         <th>Title</th>
                         <th>Location</th>
                         <th>Price</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,6 +71,10 @@
                         <td><?= esc($prop['title']) ?></td>
                         <td><?= esc($prop['location'] ?? 'N/A') ?></td>
                         <td>$<?= esc($prop['price'] ?? '0') ?></td>
+                        <td>
+                            <a href="/properties/edit/<?= esc($prop['id']) ?>" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Edit</a>
+                            <a href="/properties/delete/<?= esc($prop['id']) ?>" class="btn btn-logout" style="padding: 5px 10px; font-size: 0.8rem;" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -82,6 +89,7 @@
                     <tr>
                         <th>Post Title</th>
                         <th>Excerpts Snippet</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,6 +97,10 @@
                     <tr>
                         <td><strong><?= esc($post['title']) ?></strong></td>
                         <td><?= esc(character_limiter($post['content'], 60)) ?></td>
+                        <td>
+                            <a href="/posts/edit/<?= esc($post['id']) ?>" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Edit</a>
+                            <a href="/posts/delete/<?= esc($post['id']) ?>" class="btn btn-logout" style="padding: 5px 10px; font-size: 0.8rem;" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

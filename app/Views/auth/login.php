@@ -15,8 +15,9 @@
         .error { color: #dc3545; font-size: 0.9rem; margin-bottom: 15px; text-align: center; }
     </style>
 </head>
-<body>
-
+<body style="margin:0; min-height:100vh; display:flex; flex-direction:column;">
+<?= view('partials/header') ?>
+<div style="flex-grow:1; display:flex; justify-content:center; align-items:center; background:#f4f6f9;">
 <div class="login-card">
     <h2>Admin Login</h2>
 
@@ -41,7 +42,7 @@
         <button type="submit" class="btn">Login</button>
     </form>
 </div>
-
+</div>
 </body>
 </html>
 

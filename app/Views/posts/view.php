@@ -18,13 +18,13 @@
         }
     </style>
 </head>
-<body>
+<body><?= view("partials/header") ?>
     <a href="/posts">&larr; Back to Posts</a>
     <h1><?= esc($post['title']) ?></h1>
 
     <?php if (!empty($post['images'])): ?>
         <div style="margin: 20px 0;">
-            <img src="/uploads/blog/<?= esc($post['images']) ?>" style="max-width:100%; height:auto;" alt="Blog Image">
+            <img src="<?= esc($post['images']) ?>" style="max-width:100%; height:auto;" alt="Blog Image">
         </div>
     <?php endif; ?>
 

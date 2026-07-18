@@ -18,7 +18,7 @@
         .error { color: #e74c3c; padding: 20px; text-align: center; }
     </style>
 </head>
-<body>
+<body><?= view("partials/header") ?>
 
 <div class="container">
     <?php if (isset($property) && !empty($property)): ?>
@@ -30,8 +30,10 @@
 
         <div class="details">
             <p><strong>Location:</strong> <?= esc($property['location'] ?? 'N/A') ?></p>
-            <p><strong>Type:</strong> <?= esc($property['type'] ?? 'N/A') ?></p>
-            <p><strong>Status:</strong> <?= esc($property['status'] ?? 'Available') ?></p>
+            <p><strong>Size:</strong> <?= esc($property['size'] ?? 'N/A') ?></p>
+            <p><strong>Rooms:</strong> <?= esc($property['rooms'] ?? 'N/A') ?></p>
+            <p><strong>Bedrooms:</strong> <?= esc($property['bedrooms'] ?? 'N/A') ?></p>
+            <p><strong>Bathrooms:</strong> <?= esc($property['bathrooms'] ?? 'N/A') ?></p>
         </div>
 
         <div class="description">
