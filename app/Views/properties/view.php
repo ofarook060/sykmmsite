@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($property) ? esc($property['title']) : 'Property Details' ?></title>
     <style>
-        @font-face {
-            font-family: 'Pyidaungsu';
-            src: url('https://cdn.jsdelivr.net/npm/pyidaungsu@1.0.3/fonts/Pyidaungsu-2.5_Regular.woff2') format('woff2');
-        }
-        body { font-family: 'Pyidaungsu', sans-serif; line-height: 1.6; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;700&family=Noto+Serif+Myanmar:wght@400;700&display=swap');
+        
+        body { font-family: 'Noto Sans Myanmar', sans-serif; line-height: 1.6; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        h1, h2, h3 { font-family: 'Noto Serif Myanmar', serif; }
         .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { color: #333; }
         .price { font-size: 1.2em; color: #2ecc71; font-weight: bold; margin-bottom: 20px; }

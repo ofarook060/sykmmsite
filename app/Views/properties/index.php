@@ -1,10 +1,11 @@
 <style>
-    @font-face {
-        font-family: 'Pyidaungsu';
-        src: url('https://cdn.jsdelivr.net/npm/pyidaungsu@1.0.3/fonts/Pyidaungsu-2.5_Regular.woff2') format('woff2');
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;700&family=Noto+Serif+Myanmar:wght@400;700&display=swap');
+    
     body {
-        font-family: 'Pyidaungsu', sans-serif;
+        font-family: 'Noto Sans Myanmar', sans-serif;
+    }
+    h1, h2, h3 {
+        font-family: 'Noto Serif Myanmar', serif;
     }
 </style>
 
