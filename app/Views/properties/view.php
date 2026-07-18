@@ -25,7 +25,7 @@
         <h1><?= esc($property['title']) ?></h1>
         
         <div class="price">
-            Price: $<?= esc(number_format((float)$property['price'], 2)) ?>
+            Price: <?= esc(number_format((float)$property['price'], 2)) ?>
         </div>
 
         <div class="details">
@@ -40,6 +40,13 @@
             <h3>Description</h3>
             <p><?= nl2br(esc($property['description'])) ?></p>
         </div>
+
+        <?php if (!empty($property['facebookPost'])): ?>
+            <div class="facebook-post">
+                <h3>Facebook Post</h3>
+                <a href="<?= esc($property['facebookPost']) ?>" target="_blank">View on Facebook</a>
+            </div>
+        <?php endif; ?>
 
         <br>
         <a href="<?= base_url('properties') ?>" class="btn">&larr; Back to Properties</a>

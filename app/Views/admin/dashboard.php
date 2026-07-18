@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin System Control Panel</title>
     <style>
         body { font-family: sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #333; }
@@ -70,7 +71,7 @@
                     <tr>
                         <td><?= esc($prop['title']) ?></td>
                         <td><?= esc($prop['location'] ?? 'N/A') ?></td>
-                        <td>$<?= esc($prop['price'] ?? '0') ?></td>
+                        <td><?= esc($prop['price'] ?? '0') ?></td>
                         <td>
                             <a href="/properties/edit/<?= esc($prop['id']) ?>" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Edit</a>
                             <a href="/properties/delete/<?= esc($prop['id']) ?>" class="btn btn-logout" style="padding: 5px 10px; font-size: 0.8rem;" onclick="return confirm('Are you sure?')">Delete</a>
