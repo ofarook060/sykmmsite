@@ -34,7 +34,7 @@ class Properties extends ResourceController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
             $file->move(ROOTPATH . 'public/uploads/properties/', $newName);
-            $imagePath = '/uploads/properties/' . $newName;
+            $imagePath = json_encode(['/uploads/properties/' . $newName]);
         }
 
         $data = [
@@ -70,7 +70,7 @@ class Properties extends ResourceController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
             $file->move(ROOTPATH . 'public/uploads/properties/', $newName);
-            $imagePath = '/uploads/properties/' . $newName;
+            $imagePath = json_encode(['/uploads/properties/' . $newName]);
         }
 
         $data = [
