@@ -34,6 +34,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'apiauth'       => \App\Filters\ApiAuth::class,
     ];
 
     /**
@@ -70,14 +71,10 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             'cors',
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
+            'csrf' => ['except' => 'api/*'],
         ],
         'after' => [
             'toolbar' => ['except' => ['api/*']],
-            // 'honeypot',
-            // 'secureheaders',
         ],
     ];
 

@@ -1,9 +1,13 @@
 <?php
+
 namespace App\Controllers;
+
 use App\Models\AdminModel;
 
-class Auth extends BaseController {
-    public function login() {
+class Auth extends BaseController
+{
+    public function login()
+    {
         if ($this->request->is('post')) {
             $session = session();
             $model = new AdminModel();
@@ -22,9 +26,9 @@ class Auth extends BaseController {
         return view('auth/login');
     }
 
-    public function logout() {
+    public function logout()
+    {
         session()->destroy();
         return redirect()->to('/login');
     }
 }
-

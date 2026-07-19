@@ -2,12 +2,12 @@
 
 namespace App\Controllers\Api;
 
-use CodeIgniter\RESTful\ResourceController;
 use App\Models\PostModel;
+use CodeIgniter\RESTful\ResourceController;
 
 class Posts extends ResourceController
 {
-    protected $format = 'json'; 
+    protected $format = 'json';
 
     public function index()
     {
@@ -20,14 +20,16 @@ class Posts extends ResourceController
     {
         $model = new PostModel();
         $post = $model->find($id);
-        if (!$post) return $this->failNotFound('Post not found');
+        if (!$post) {
+            return $this->failNotFound('Post not found');
+        }
         return $this->respond($post);
     }
 
     public function create()
     {
         $model = new PostModel();
-        
+
         // Handle image upload
         $imagePath = null;
         $file = $this->request->getFile('images');
@@ -41,7 +43,7 @@ class Posts extends ResourceController
         $data = [
             'title'   => $this->request->getVar('title'),
             'content' => $this->request->getVar('content'),
-            'images'  => $imagePath
+            'images'  => $imagePath,
         ];
 
         if ($model->save($data)) {
@@ -53,13 +55,15 @@ class Posts extends ResourceController
     public function update($id = null)
     {
         $model = new PostModel();
-        
+
         $post = $model->find($id);
-        if (!$post) return $this->failNotFound('Post not found');
+        if (!$post) {
+            return $this->failNotFound('Post not found');
+        }
 
         $imagePath = $post['images']; // Keep existing
         $file = $this->request->getFile('images');
-        
+
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
             $file->move(ROOTPATH . 'public/uploads/blog/', $newName);
@@ -69,7 +73,7 @@ class Posts extends ResourceController
         $data = [
             'title'   => $this->request->getVar('title') ?? $post['title'],
             'content' => $this->request->getVar('content') ?? $post['content'],
-            'images'  => $imagePath
+            'images'  => $imagePath,
         ];
 
         if ($model->update($id, $data)) {

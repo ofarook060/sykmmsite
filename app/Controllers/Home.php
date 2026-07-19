@@ -1,11 +1,14 @@
 <?php
-namespace App\Controllers;
-use App\Models\PropertyModel;
-use App\Models\PostModel;
 
-class Home extends BaseController {
-    
-    public function index() {
+namespace App\Controllers;
+
+use App\Models\PostModel;
+use App\Models\PropertyModel;
+
+class Home extends BaseController
+{
+    public function index()
+    {
         $propertyModel = new PropertyModel();
         $postModel = new PostModel();
 
@@ -15,7 +18,7 @@ class Home extends BaseController {
 
         // Base property query
         $propertiesQuery = $propertyModel;
-        
+
         if (!empty($location)) {
             $propertiesQuery = $propertiesQuery->like('location', $location);
         }
@@ -30,10 +33,9 @@ class Home extends BaseController {
             'latest_posts' => $postModel->orderBy('id', 'DESC')->findAll(3),
             // Pass search parameters back to keep inputs filled
             'old_location' => $location,
-            'old_price'    => $maxPrice
+            'old_price'    => $maxPrice,
         ];
 
         return view('home', $data);
     }
 }
-

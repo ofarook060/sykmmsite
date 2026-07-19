@@ -1,14 +1,18 @@
 <?php
+
 namespace App\Controllers;
+
 use App\Models\PropertyModel;
 // 1. Import the API Response trait
 use CodeIgniter\API\ResponseTrait;
 
-class Properties extends BaseController {
+class Properties extends BaseController
+{
     // 2. Enable the trait inside your controller class
     use ResponseTrait;
 
-    public function index() {
+    public function index()
+    {
         $model = new PropertyModel();
         $properties = $model->findAll();
 
@@ -21,7 +25,8 @@ class Properties extends BaseController {
         return view('properties/index', $data);
     }
 
-    public function view($id) {
+    public function view($id)
+    {
         $model = new PropertyModel();
         $property = $model->find($id);
 
@@ -46,17 +51,22 @@ class Properties extends BaseController {
     }
 
     // Admin: Edit a property
-    public function edit($id = null) {
-        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
+    public function edit($id = null)
+    {
+        if (!session()->get('isAdminLoggedIn')) {
+            return redirect()->to('/login');
+        }
 
         $model = new PropertyModel();
         $property = $model->find($id);
-        if (!$property) throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        if (!$property) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
 
         if ($this->request->is('post')) {
             $imagePath = $property['images']; // Keep existing
             $file = $this->request->getFile('images');
-            
+
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $targetPath = ROOTPATH . 'public/uploads/';
@@ -83,20 +93,24 @@ class Properties extends BaseController {
                 return redirect()->to('/admin/dashboard')->with('success', 'Property updated successfully!');
             }
         }
-        
+
         return view('properties/edit', ['property' => $property]);
     }
 
     // Admin: Delete a property
-    public function delete($id = null) {
-        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
-        
+    public function delete($id = null)
+    {
+        if (!session()->get('isAdminLoggedIn')) {
+            return redirect()->to('/login');
+        }
+
         $model = new PropertyModel();
         $model->delete($id);
         return redirect()->to('/admin/dashboard')->with('success', 'Property deleted!');
     }
 
-    public function create() {
+    public function create()
+    {
 
         // Handle Mobile API Submissions (JSON data or multipart)
         $isJsonRequest = $this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json';
@@ -108,16 +122,16 @@ class Properties extends BaseController {
 
         if ($this->request->is('post')) {
             $model = new PropertyModel();
-            
+
             // New Image handling logic for mobile multipart/form-data
             $imagePath = null;
             $file = $this->request->getFile('images'); // Matches key in Mobile App's FormData
-            
+
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $targetPath = ROOTPATH . 'public/uploads/';
                 $file->move($targetPath, $newName);
-                
+
                 // Store path in DB. Existing code expects JSON array.
                 $imagePath = json_encode(['/uploads/' . $newName]);
             }
@@ -148,7 +162,7 @@ class Properties extends BaseController {
                 return $this->fail('Failed to save property records');
             }
         }
-        
+
         return view('properties/create');
     }
 }

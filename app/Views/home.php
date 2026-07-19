@@ -24,7 +24,7 @@
         .section-title { text-align: center; margin: 40px 0 20px 0; font-size: 2rem; position: relative; }
         .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: #007bff; margin: 10px auto 0 auto; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px; }
         .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-5px); }
         .card-img { width: 100%; height: 200px; object-fit: cover; background: #e9ecef; }
@@ -37,6 +37,16 @@
         .btn-view:hover { background: #007bff; color: white; }
 
         footer { background: #343a40; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9rem; }
+        @media (max-width: 768px) {
+            .hero { padding: 50px 15px; }
+            .hero h1 { font-size: 1.6rem; }
+            .search-container { margin: -20px 15px 30px 15px; padding: 15px; }
+            .search-form input { min-width: 0; flex: 1 1 100%; }
+            .search-form button { width: 100%; }
+            .container { padding: 0 15px; }
+            .section-title { font-size: 1.5rem; }
+            .grid { grid-template-columns: 1fr; gap: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -55,7 +65,7 @@
             <input type="text" name="location" placeholder="Search by location (e.g. City)..." value="<?= esc($old_location) ?>">
             <input type="number" name="price" placeholder="Maximum Price ($)..." value="<?= esc($old_price) ?>">
             <button type="submit">Filter Listings</button>
-            <?php if(!empty($old_location) || !empty($old_price)): ?>
+            <?php if (!empty($old_location) || !empty($old_price)): ?>
                 <a href="/" style="padding:12px; color:#dc3545; text-decoration:none;">Clear</a>
             <?php endif; ?>
         </form>
@@ -71,14 +81,14 @@
             <?php else: ?>
                 <?php foreach ($properties as $prop): ?>
                     <div class="card">
-                        <?php 
+                        <?php
                         $images = json_decode($prop['images'] ?? '', true);
-                        $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
-                        ?>
+                    $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
+                    ?>
                         <img src="<?= esc($imgSrc) ?>" class="card-img" alt="Property Image">
                         <div class="card-body">
                             <h3 class="card-title"><?= esc($prop['title']) ?></h3>
-                            <div class="card-price">$<?= esc(number_format((float)($prop['price'] ?? 0))) ?></div>
+                            <div class="card-price">$<?= esc(number_format((float) ($prop['price'] ?? 0))) ?></div>
                             <div class="card-meta">📍 <?= esc($prop['location'] ?? 'Unknown Location') ?></div>
                             <a href="/property/<?= $prop['id'] ?>" class="btn-view">View Details</a>
                         </div>
@@ -95,9 +105,9 @@
             <?php else: ?>
                 <?php foreach ($latest_posts as $post): ?>
                     <div class="card">
-                        <?php 
-                        $imgSrc = !empty($post['images']) ? $post['images'] : '';
-                        ?>
+                        <?php
+                    $imgSrc = !empty($post['images']) ? $post['images'] : '';
+                    ?>
                         <img src="<?= esc($imgSrc) ?>" class="card-img" alt="Blog Image">
                         <div class="card-body">
                             <h3 class="card-title"><?= esc($post['title']) ?></h3>

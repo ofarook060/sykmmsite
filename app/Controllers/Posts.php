@@ -1,13 +1,17 @@
 <?php
+
 namespace App\Controllers;
+
 use App\Models\PostModel;
 use CodeIgniter\API\ResponseTrait;
 
-class Posts extends BaseController {
+class Posts extends BaseController
+{
     use ResponseTrait;
 
     // Public: List all blog posts
-    public function index() {
+    public function index()
+    {
         $model = new PostModel();
         $posts = $model->findAll();
 
@@ -21,7 +25,8 @@ class Posts extends BaseController {
     }
 
     // Public: View a single post for web visitors
-    public function view($id) {
+    public function view($id)
+    {
         $model = new PostModel();
         $data['post'] = $model->find($id);
 
@@ -32,7 +37,8 @@ class Posts extends BaseController {
     }
 
     // Admin/Mobile: Create a new blog post
-    public function create() {
+    public function create()
+    {
         $isJsonRequest = $this->request->negotiate('media', ['text/html', 'application/json']) === 'application/json';
 
         if (!$isJsonRequest && !session()->get('isAdminLoggedIn')) {
@@ -41,11 +47,11 @@ class Posts extends BaseController {
 
         if ($this->request->is('post')) {
             $model = new PostModel();
-            
+
             // New Image handling logic for mobile multipart/form-data
             $imagePath = null;
             $file = $this->request->getFile('images'); // Matches key in Mobile App's FormData
-            
+
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $targetPath = ROOTPATH . 'public/uploads/blog/';
@@ -56,7 +62,7 @@ class Posts extends BaseController {
             $postData = [
                 'title'   => $this->request->getVar('title'),
                 'content' => $this->request->getVar('content'),
-                'images'  => $imagePath
+                'images'  => $imagePath,
             ];
 
             if ($model->save($postData)) {
@@ -75,17 +81,22 @@ class Posts extends BaseController {
     }
 
     // Admin: Edit a blog post
-    public function edit($id = null) {
-        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
+    public function edit($id = null)
+    {
+        if (!session()->get('isAdminLoggedIn')) {
+            return redirect()->to('/login');
+        }
 
         $model = new PostModel();
         $post = $model->find($id);
-        if (!$post) throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        if (!$post) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
 
         if ($this->request->is('post')) {
             $imagePath = $post['images']; // Keep existing
             $file = $this->request->getFile('images');
-            
+
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $targetPath = ROOTPATH . 'public/uploads/blog/';
@@ -97,7 +108,7 @@ class Posts extends BaseController {
                 'id'      => $id,
                 'title'   => $this->request->getVar('title'),
                 'content' => $this->request->getVar('content'),
-                'images'  => $imagePath
+                'images'  => $imagePath,
             ];
 
             if ($model->save($postData)) {
@@ -109,25 +120,31 @@ class Posts extends BaseController {
     }
 
     // Admin: Delete a blog post
-    public function delete($id = null) {
-        if (!session()->get('isAdminLoggedIn')) return redirect()->to('/login');
-        
+    public function delete($id = null)
+    {
+        if (!session()->get('isAdminLoggedIn')) {
+            return redirect()->to('/login');
+        }
+
         $model = new PostModel();
         $model->delete($id);
         return redirect()->to('/admin/dashboard')->with('success', 'Post deleted!');
     }
 
     // Admin/Mobile: Update an existing post
-    public function update($id = null) {
+    public function update($id = null)
+    {
 
         $model = new PostModel();
-        
+
         $post = $model->find($id);
-        if (!$post) return $this->failNotFound('Post not found');
+        if (!$post) {
+            return $this->failNotFound('Post not found');
+        }
 
         $imagePath = $post['images']; // Keep existing
         $file = $this->request->getFile('images');
-        
+
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
             $targetPath = ROOTPATH . 'public/uploads/blog/';
@@ -139,14 +156,13 @@ class Posts extends BaseController {
             'id'      => $id,
             'title'   => $this->request->getVar('title') ?? $post['title'],
             'content' => $this->request->getVar('content') ?? $post['content'],
-            'images'  => $imagePath
+            'images'  => $imagePath,
         ];
 
         if ($model->save($postData)) {
             return $this->respond(['status' => true, 'message' => 'Post updated successfully']);
         }
-        
+
         return $this->fail('Failed to update post');
     }
 }
-

@@ -10,20 +10,23 @@ class AdminAuth extends BaseApiController
     {
         $model = new AdminModel();
         $input = $this->request->getJSON(true);
-        
+
         $username = $input['username'] ?? null;
         $password = $input['password'] ?? null;
 
         $admin = $model->where('username', $username)->first();
 
         if ($admin && password_verify($password, $admin['password'])) {
-            // NOTE: Replace 'dummy-token-for-now' with a proper JWT implementation
+            $token = bin2hex(random_bytes(32));
+
+            $model->update($admin['id'], ['api_token' => $token]);
+
             return $this->respond([
                 'status' => 'success',
                 'data' => [
                     'username' => $admin['username'],
-                    'token' => 'dummy-token-for-now'
-                ]
+                    'token'    => $token,
+                ],
             ]);
         }
 

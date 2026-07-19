@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { font-family: sans-serif; background: #f4f6f9; margin: 0; }
+        .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 70px); padding: 20px; }
         .login-card { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 350px; }
         h2 { margin-top: 0; text-align: center; color: #333; }
         .form-group { margin-bottom: 15px; }
@@ -16,14 +17,14 @@
         .error { color: #dc3545; font-size: 0.9rem; margin-bottom: 15px; text-align: center; }
     </style>
 </head>
-<body style="margin:0; min-height:100vh; display:flex; flex-direction:column;">
+<body>
 <?= view('partials/header') ?>
-<div style="flex-grow:1; display:flex; justify-content:center; align-items:center; background:#f4f6f9;">
+<div class="login-wrapper">
 <div class="login-card">
     <h2>Admin Login</h2>
 
     <!-- Display Flash Error Messages -->
-    <?php if(session()->getFlashdata('error')): ?>
+    <?php if (session()->getFlashdata('error')): ?>
         <div class="error"><?= esc(session()->getFlashdata('error')) ?></div>
     <?php endif; ?>
 

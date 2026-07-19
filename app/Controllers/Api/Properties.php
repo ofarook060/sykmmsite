@@ -2,12 +2,12 @@
 
 namespace App\Controllers\Api;
 
-use CodeIgniter\RESTful\ResourceController;
 use App\Models\PropertyModel;
+use CodeIgniter\RESTful\ResourceController;
 
 class Properties extends ResourceController
 {
-    protected $format = 'json'; 
+    protected $format = 'json';
 
     public function index()
     {
@@ -20,14 +20,16 @@ class Properties extends ResourceController
     {
         $model = new PropertyModel();
         $property = $model->find($id);
-        if (!$property) return $this->failNotFound('Property not found');
+        if (!$property) {
+            return $this->failNotFound('Property not found');
+        }
         return $this->respond($property);
     }
 
     public function create()
     {
         $model = new PropertyModel();
-        
+
         // Handle image upload
         $imagePath = null;
         $file = $this->request->getFile('images');
@@ -48,7 +50,7 @@ class Properties extends ResourceController
             'bathrooms'       => $this->request->getVar('bathrooms'),
             'description'     => $this->request->getVar('description'),
             'facebookPost'    => $this->request->getVar('facebookPost'),
-            'images'          => $imagePath
+            'images'          => $imagePath,
         ];
 
         if ($model->save($data)) {
@@ -60,13 +62,15 @@ class Properties extends ResourceController
     public function update($id = null)
     {
         $model = new PropertyModel();
-        
+
         $property = $model->find($id);
-        if (!$property) return $this->failNotFound('Property not found');
+        if (!$property) {
+            return $this->failNotFound('Property not found');
+        }
 
         $imagePath = $property['images'];
         $file = $this->request->getFile('images');
-        
+
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
             $file->move(ROOTPATH . 'public/uploads/properties/', $newName);
@@ -84,7 +88,7 @@ class Properties extends ResourceController
             'bathrooms'       => $this->request->getVar('bathrooms') ?? $property['bathrooms'],
             'description'     => $this->request->getVar('description') ?? $property['description'],
             'facebookPost'    => $this->request->getVar('facebookPost') ?? $property['facebookPost'],
-            'images'          => $imagePath
+            'images'          => $imagePath,
         ];
 
         if ($model->update($id, $data)) {

@@ -18,9 +18,12 @@
         .post-content {
             margin-top: 20px;
         }
+        @media (max-width: 768px) {
+            body { margin: 10px; }
+        }
     </style>
 </head>
-<body><?= view("partials/header") ?>
+<body><?= view('partials/header') ?>
     <a href="/posts">&larr; Back to Posts</a>
     <h1><?= esc($post['title']) ?></h1>
 

@@ -13,7 +13,7 @@
         main { padding: 20px; }
     </style>
 </head>
-<body><?= view("partials/header") ?>
+<body><?= view('partials/header') ?>
     <header>
         <a href="/" class="logo-title">
             <img src="/logo.png" alt="Logo">

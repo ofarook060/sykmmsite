@@ -2,8 +2,8 @@
 
 namespace App\Controllers\Api;
 
-use App\Models\PropertyModel;
 use App\Models\PostModel;
+use App\Models\PropertyModel;
 
 class AdminDashboard extends BaseApiController
 {
@@ -19,7 +19,7 @@ class AdminDashboard extends BaseApiController
                 'total_properties' => $propertyModel->countAllResults(),
                 'total_posts' => $postModel->countAllResults(),
                 'recent_posts' => $postModel->orderBy('id', 'DESC')->findAll(5),
-            ]
+            ],
         ]);
     }
 }
