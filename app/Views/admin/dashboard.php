@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin System Control Panel</title>
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
+        body { font-family: sans-serif; background: #F8F6EE; margin: 0; padding: 20px; color: #333; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; margin-bottom: 20px; }
         .stats-grid { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
-        .stat-card { background: #fff; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        .stat-card h2 { margin: 5px 0; font-size: 2.5rem; color: #007bff; }
-        .actions { margin-bottom: 30px; background: #e9ecef; padding: 15px; border-radius: 8px; }
-        .btn { display: inline-block; padding: 10px 15px; background: #007bff; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-right: 10px; }
-        .btn-green { background: #28a745; }
-        .btn-logout { background: #dc3545; }
+        .stat-card { background: #fff; padding: 20px; border-radius: 12px; flex: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; border: 1px solid #F4D66D; }
+        .stat-card h2 { margin: 5px 0; font-size: 2.5rem; color: #D4AF37; }
+        .actions { margin-bottom: 30px; background: #032F2E; padding: 15px; border-radius: 12px; }
+        .actions h3 { color: #D4AF37; }
+        .btn { display: inline-block; padding: 10px 15px; background: #D4AF37; color: #032F2E; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 10px; }
+        .btn-green { background: #D4AF37; }
+        .btn-logout { background: #dc3545; color: #fff; }
         .data-tables { display: flex; gap: 20px; flex-wrap: wrap; }
-        .table-box { background: #fff; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .table-box { background: #fff; padding: 20px; border-radius: 12px; flex: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #F4D66D; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; }
+        th { background: #032F2E; color: #D4AF37; }
         @media (max-width: 768px) {
             .dashboard-header { flex-direction: column; gap: 10px; text-align: center; }
             .stats-grid { flex-direction: column; }
@@ -54,8 +55,8 @@
         <h3>Quick Operations</h3>
         <a href="/properties/create" class="btn">+ Add New Property</a>
         <a href="/posts/create" class="btn btn-green">+ Publish Blog Post</a>
-        <a href="/properties" target="_blank" style="margin-left: 20px;">View Public Listings &rarr;</a>
-        <a href="/posts" target="_blank" style="margin-left: 20px;">View Public Blog &rarr;</a>
+        <a href="/properties" target="_blank" style="margin-left: 20px; color: #F4D66D;">View Public Listings &rarr;</a>
+        <a href="/posts" target="_blank" style="margin-left: 20px; color: #F4D66D;">View Public Blog &rarr;</a>
     </div>
 
     <!-- Data Tables Grid Overview -->
@@ -125,4 +126,3 @@
 
 </body>
 </html>
-

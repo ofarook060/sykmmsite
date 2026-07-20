@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Post</title>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 20px; background: #f4f6f9; }
-        .form-card { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input[type="text"], input[type="file"], textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        body { font-family: sans-serif; margin: 0; padding: 20px; background: #F8F6EE; }
+        .form-card { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #F4D66D; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #032F2E; }
+        input[type="text"], input[type="file"], textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
         textarea { min-height: 150px; resize: vertical; }
-        button { width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        h1 { margin-top: 0; color: #333; }
+        button { width: 100%; padding: 12px; background: #D4AF37; color: #032F2E; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        button:hover { background: #A87C17; }
+        h1 { margin-top: 0; color: #032F2E; }
         .current-img { max-width: 100px; border-radius: 4px; margin-bottom: 15px; }
     </style>
 </head>

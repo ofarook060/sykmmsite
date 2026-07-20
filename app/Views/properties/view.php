@@ -7,15 +7,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;700&family=Noto+Serif+Myanmar:wght@400;700&display=swap');
         
-        body { font-family: 'Noto Sans Myanmar', sans-serif; line-height: 1.6; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        body { font-family: 'Noto Sans Myanmar', sans-serif; line-height: 1.6; background-color: #F8F6EE; margin: 0; padding: 20px; }
         h1, h2, h3 { font-family: 'Noto Serif Myanmar', serif; }
-        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; }
-        h1 { color: #333; }
-        .price { font-size: 1.2em; color: #2ecc71; font-weight: bold; margin-bottom: 20px; }
-        .details { background: #f9f9f9; padding: 15px; border-left: 4px solid #3498db; margin-bottom: 20px; }
-        .btn { display: inline-block; background: #3498db; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 3px; }
-        .btn:hover { background: #2980b9; }
-        .error { color: #e74c3c; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; border: 1px solid #F4D66D; }
+        h1 { color: #032F2E; }
+        .price { font-size: 1.2em; color: #D4AF37; font-weight: bold; margin-bottom: 20px; }
+        .details { background: #F8F6EE; padding: 15px; border-left: 4px solid #D4AF37; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+        .btn { display: inline-block; background: #D4AF37; color: #032F2E; padding: 10px 15px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .btn:hover { background: #A87C17; }
+        .error { color: #dc3545; padding: 20px; text-align: center; }
         @media (max-width: 768px) {
             body { padding: 10px; }
             .container { padding: 15px; }
@@ -65,4 +65,3 @@
 
 </body>
 </html>
-

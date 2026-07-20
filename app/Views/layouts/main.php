@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'SYK Services' ?></title>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 0; color: #333; }
-        header { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ddd; background: #fff; }
+        body { font-family: sans-serif; margin: 0; padding: 0; color: #333; background: #F8F6EE; }
+        header { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid #0C4440; background: #032F2E; }
         .logo-title { display: flex; align-items: center; text-decoration: none; color: inherit; }
         .logo-title img { width: 40px; margin-right: 10px; }
-        .logo-title h1 { margin: 0; font-size: 1.5rem; }
+        .logo-title h1 { margin: 0; font-size: 1.5rem; color: #D4AF37; }
         main { padding: 20px; }
     </style>
 </head>
