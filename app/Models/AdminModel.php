@@ -8,7 +8,7 @@ class AdminModel extends Model
 {
     protected $table = 'admins';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['username', 'password'];
+    protected $allowedFields = ['username', 'password', 'api_token'];
 
     protected $validationRules = [
         'username' => 'required|max_length[255]|is_unique[admins.username]',
