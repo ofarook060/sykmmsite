@@ -30,9 +30,20 @@ $routes->get('/', 'Home::index');
 $routes->group('api', function ($routes) {
     $routes->post('adminauth/login', 'Api\AdminAuth::login');
 
+    // Public read-only routes (no auth required)
+    $routes->get('properties', 'Api\Properties::index');
+    $routes->get('properties/(:num)', 'Api\Properties::show/$1');
+    $routes->get('posts', 'Api\Posts::index');
+    $routes->get('posts/(:num)', 'Api\Posts::show/$1');
+
+    // Protected routes (auth required)
     $routes->group('', ['filter' => 'apiauth'], function ($routes) {
-        $routes->resource('properties', ['controller' => 'Api\Properties']);
-        $routes->resource('posts', ['controller' => 'Api\Posts']);
+        $routes->post('properties', 'Api\Properties::create');
+        $routes->put('properties/(:num)', 'Api\Properties::update/$1');
+        $routes->delete('properties/(:num)', 'Api\Properties::delete/$1');
+        $routes->post('posts', 'Api\Posts::create');
+        $routes->put('posts/(:num)', 'Api\Posts::update/$1');
+        $routes->delete('posts/(:num)', 'Api\Posts::delete/$1');
         $routes->get('admin-dashboard', 'Api\AdminDashboard::index');
     });
 });
