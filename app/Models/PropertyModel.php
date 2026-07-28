@@ -22,7 +22,7 @@ class PropertyModel extends Model
         'masterBedrooms' => 'permit_empty|max_length[255]',
         'bedrooms'       => 'permit_empty|max_length[255]',
         'bathrooms'      => 'permit_empty|max_length[255]',
-        'facebookPost'   => 'permit_empty|valid_url_strict',
+        'facebookPost'   => 'permit_empty|max_length[255]',
     ];
 
     protected $validationMessages = [
@@ -37,8 +37,6 @@ class PropertyModel extends Model
         'masterBedrooms' => ['max_length' => 'Master bedrooms cannot exceed 255 characters.'],
         'bedrooms'       => ['max_length' => 'Bedrooms cannot exceed 255 characters.'],
         'bathrooms'      => ['max_length' => 'Bathrooms cannot exceed 255 characters.'],
-        'facebookPost' => [
-            'valid_url_strict' => 'Please provide a valid full web address link for the Facebook post.',
-        ],
+        'facebookPost' => ['max_length' => 'Cannot exceed 255 characters.'],
     ];
 }
