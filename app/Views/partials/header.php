@@ -6,6 +6,7 @@
     <nav style="display: flex; gap: 15px; flex-wrap: wrap;">
         <a href="/properties" style="text-decoration: none; color: #fff; font-weight: 500; white-space: nowrap;">Properties</a>
         <a href="/posts" style="text-decoration: none; color: #fff; font-weight: 500; white-space: nowrap;">Blog</a>
+        <a href="/facebook" style="text-decoration: none; color: #fff; font-weight: 500; white-space: nowrap;">Facebook</a>
         <a href="/login" style="text-decoration: none; color: #D4AF37; font-weight: 500; white-space: nowrap;">Admin Login</a>
     </nav>
 </header>

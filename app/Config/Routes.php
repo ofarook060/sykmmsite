@@ -32,6 +32,7 @@ $routes->post('posts/edit/(:num)', 'Posts::edit/$1');
 $routes->post('posts/delete/(:num)', 'Posts::delete/$1');
 
 // Base Site Views
+$routes->get('facebook', 'Facebook::page');
 $routes->get('admin/dashboard', 'Admin::dashboard');
 $routes->get('/', 'Home::index');
 
