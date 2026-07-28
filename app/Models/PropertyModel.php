@@ -22,7 +22,7 @@ class PropertyModel extends Model
         'masterBedrooms' => 'permit_empty|max_length[255]',
         'bedrooms'       => 'permit_empty|max_length[255]',
         'bathrooms'      => 'permit_empty|max_length[255]',
-        'facebookPost'   => 'permit_empty|max_length[255]',
+        'facebookPost'   => 'permit_empty',
     ];
 
     protected $validationMessages = [
