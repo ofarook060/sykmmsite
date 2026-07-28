@@ -37,7 +37,7 @@ $routes->get('/', 'Home::index');
 
 // RESTful JSON API Router Engine (Namespace prefixed automatically)
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
-    
+
     // Auth route inside Api group
     $routes->post('adminauth/login', 'AdminAuth::login');
 
@@ -52,11 +52,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
         $routes->post('properties', 'Properties::create');
         $routes->put('properties/(:num)', 'Properties::update/$1');
         $routes->delete('properties/(:num)', 'Properties::delete/$1');
-        
+
         $routes->post('posts', 'Posts::create');
         $routes->put('posts/(:num)', 'Posts::update/$1');
         $routes->delete('posts/(:num)', 'Posts::delete/$1');
-        
+
         $routes->get('admin-dashboard', 'AdminDashboard::index');
     });
 });

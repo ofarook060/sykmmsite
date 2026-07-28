@@ -85,8 +85,8 @@
         </div>
 
         <div class="form-group">
-            <label for="facebookPost">Facebook Post Iframe Source URL</label>
-            <input type="url" name="facebookPost" id="facebookPost" class="form-control" value="<?= old('facebookPost') ?>" placeholder="https://facebook.com?...">
+            <label for="facebookPost">Facebook Post URL (paste only the embed URL, not the full iframe code)</label>
+            <input type="url" name="facebookPost" id="facebookPost" class="form-control" value="<?= old('facebookPost') ?>" placeholder="https://www.facebook.com/plugins/post.php?href=...">
         </div>
 
         <div class="form-group">

@@ -9,6 +9,17 @@ class Properties extends BaseController
 {
     use ResponseTrait;
 
+    private function extractIframeSrc(?string $input): ?string
+    {
+        if ($input === null || $input === '') {
+            return $input;
+        }
+        if (preg_match('/<iframe[^>]+src\s*=\s*"([^"]+)"/i', $input, $m)) {
+            return $m[1];
+        }
+        return $input;
+    }
+
     public function index()
     {
         $model = new PropertyModel();
@@ -60,7 +71,7 @@ class Properties extends BaseController
 
         if ($this->request->is('post')) {
             $uploadedImages = [];
-            
+
             // Check for multiple files from web form (images[])
             if ($files = $this->request->getFiles()) {
                 if (isset($files['images']) && is_array($files['images'])) {
@@ -102,7 +113,7 @@ class Properties extends BaseController
                 'bedrooms'       => $this->request->getVar('bedrooms'),
                 'bathrooms'      => $this->request->getVar('bathrooms'),
                 'description'    => $this->request->getVar('description'),
-                'facebookPost'   => $this->request->getVar('facebookPost'),
+                'facebookPost'   => $this->extractIframeSrc($this->request->getVar('facebookPost')),
             ];
 
             if ($model->save($propertyData)) {
@@ -175,7 +186,7 @@ class Properties extends BaseController
                 'bedrooms'       => $this->request->getVar('bedrooms'),
                 'bathrooms'      => $this->request->getVar('bathrooms'),
                 'description'    => $this->request->getVar('description'),
-                'facebookPost'   => $this->request->getVar('facebookPost'),
+                'facebookPost'   => $this->extractIframeSrc($this->request->getVar('facebookPost')),
             ];
 
             if ($model->save($propertyData)) {

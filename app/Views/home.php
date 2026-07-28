@@ -85,8 +85,8 @@
                     <div class="card">
                         <?php
                         $images = json_decode($prop['images'] ?? '', true);
-                        $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
-                        ?>
+                    $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
+                    ?>
                         <!-- 2. ROUTED THE IMAGE AND VIEW LINKS SECURELY THROUGH BASE_URL() -->
                         <img src="<?= !empty($imgSrc) ? base_url(esc($imgSrc)) : base_url('uploads/placeholder.jpg') ?>" class="card-img" alt="Property Image">
                         <div class="card-body">

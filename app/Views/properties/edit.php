@@ -72,8 +72,8 @@
             <label>Description</label>
             <textarea name="description"><?= old('description', $property['description']) ?></textarea>
 
-            <label>Facebook Post Iframe URL</label>
-            <input type="text" name="facebookPost" value="<?= old('facebookPost', $property['facebookPost']) ?>">
+            <label>Facebook Post URL (paste only the embed URL, not the full iframe code)</label>
+            <input type="url" name="facebookPost" value="<?= old('facebookPost', $property['facebookPost']) ?>" placeholder="https://www.facebook.com/plugins/post.php?href=...">
 
             <!-- 3. RENDER MULTIPLE CURRENT IMAGES IN A CONTAINER GRID -->
             <?php if (!empty($property['images'])): ?>

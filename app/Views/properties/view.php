@@ -45,7 +45,7 @@
     <?php if (isset($property) && !empty($property)): ?>
         
         <!-- IMAGE CAROUSEL SECTION -->
-        <?php 
+        <?php
         $images = [];
         if (!empty($property['images'])) {
             $decoded = json_decode($property['images'], true);
@@ -103,7 +103,7 @@
             <div class="facebook-post-container" style="margin-top: 20px;">
                 <h3>Facebook Post</h3>
                 <iframe 
-                    src="<?= esc($property['facebookPost'], 'url'); ?>" 
+                    src="<?= esc($property['facebookPost']); ?>" 
                     width="500" 
                     height="700" 
                     style="border:none; overflow:hidden; width:100%; max-width:500px;" 

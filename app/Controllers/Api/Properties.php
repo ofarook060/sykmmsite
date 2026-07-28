@@ -9,6 +9,17 @@ class Properties extends ResourceController
 {
     protected $format = 'json';
 
+    private function extractIframeSrc(?string $input): ?string
+    {
+        if ($input === null || $input === '') {
+            return $input;
+        }
+        if (preg_match('/<iframe[^>]+src\s*=\s*"([^"]+)"/i', $input, $m)) {
+            return $m[1];
+        }
+        return $input;
+    }
+
     public function index()
     {
         $model = new PropertyModel();
@@ -26,14 +37,14 @@ class Properties extends ResourceController
     {
         $model = new PropertyModel();
         $property = $model->find($id);
-        
+
         if (!$property) {
             return $this->failNotFound('Property not found');
         }
 
         // Convert raw JSON text from DB into a standard API response array
         $property['images'] = !empty($property['images']) ? json_decode($property['images'], true) : [];
-        
+
         return $this->respond($property);
     }
 
@@ -76,7 +87,7 @@ class Properties extends ResourceController
             'bedrooms'        => $this->request->getVar('bedrooms'),
             'bathrooms'       => $this->request->getVar('bathrooms'),
             'description'     => $this->request->getVar('description'),
-            'facebookPost'    => $this->request->getVar('facebookPost'),
+            'facebookPost'    => $this->extractIframeSrc($this->request->getVar('facebookPost')),
             'images'          => $imageJsonString,
         ];
 
@@ -90,13 +101,13 @@ class Properties extends ResourceController
     {
         $model = new PropertyModel();
         $property = $model->find($id);
-        
+
         if (!$property) {
             return $this->failNotFound('Property not found');
         }
 
         // Note: PHP natively discards multipart/form-data files sent on standard PUT requests.
-        // For mobile clients uploading images during updates, tell them to send a POST request 
+        // For mobile clients uploading images during updates, tell them to send a POST request
         // targeting your endpoint with a spoofed header or use normal POST methods.
         $uploadedImages = [];
         if ($files = $this->request->getFiles()) {
@@ -141,7 +152,7 @@ class Properties extends ResourceController
             'bedrooms'        => $this->request->getVar('bedrooms') ?? ($rawInput['bedrooms'] ?? $property['bedrooms']),
             'bathrooms'       => $this->request->getVar('bathrooms') ?? ($rawInput['bathrooms'] ?? $property['bathrooms']),
             'description'     => $this->request->getVar('description') ?? ($rawInput['description'] ?? $property['description']),
-            'facebookPost'    => $this->request->getVar('facebookPost') ?? ($rawInput['facebookPost'] ?? $property['facebookPost']),
+            'facebookPost'    => $this->extractIframeSrc($this->request->getVar('facebookPost') ?? ($rawInput['facebookPost'] ?? $property['facebookPost'])),
             'images'          => $imagePath,
         ];
 
@@ -154,7 +165,7 @@ class Properties extends ResourceController
     public function delete($id = null)
     {
         $model = new PropertyModel();
-        
+
         if (!$model->find($id)) {
             return $this->failNotFound('Property not found');
         }
