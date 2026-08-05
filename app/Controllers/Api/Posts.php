@@ -9,6 +9,39 @@ class Posts extends ResourceController
 {
     protected $format = 'json';
 
+    private function moveUploadedFiles(array $fieldNames, string $targetDir, string $publicPrefix = '/uploads/blog/'): array
+    {
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $uploaded = [];
+        $files = $this->request->getFiles();
+
+        foreach ($fieldNames as $fieldName) {
+            if (! isset($files[$fieldName])) {
+                continue;
+            }
+
+            $field = $files[$fieldName];
+            $items = is_array($field) ? $field : [$field];
+
+            foreach ($items as $file) {
+                if (! $file->isValid() || $file->hasMoved()) {
+                    continue;
+                }
+                $newName = $file->getRandomName();
+                $file->move($targetDir, $newName);
+                $uploaded[] = [
+                    'path' => $publicPrefix . $newName,
+                    'name' => $file->getClientName(),
+                ];
+            }
+        }
+
+        return $uploaded;
+    }
+
     public function index()
     {
         $this->response->setContentType('application/json');
@@ -30,15 +63,8 @@ class Posts extends ResourceController
     {
         $model = new PostModel();
 
-        // Handle image upload
-        $imagePath = null;
-        $file = $this->request->getFile('images');
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            // Ensure this directory exists in the backend
-            $file->move(ROOTPATH . 'public/uploads/blog/', $newName);
-            $imagePath = '/uploads/blog/' . $newName;
-        }
+        $attachments = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
+        $imagePath = !empty($attachments) ? json_encode($attachments) : null;
 
         $data = [
             'title'   => $this->request->getVar('title'),
@@ -61,14 +87,16 @@ class Posts extends ResourceController
             return $this->failNotFound('Post not found');
         }
 
-        $imagePath = $post['images']; // Keep existing
-        $file = $this->request->getFile('images');
-
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            $file->move(ROOTPATH . 'public/uploads/blog/', $newName);
-            $imagePath = '/uploads/blog/' . $newName;
+        $uploaded = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
+        $existing = [];
+        if (!empty($post['images'])) {
+            $decoded = json_decode($post['images'], true);
+            if (is_array($decoded)) {
+                $existing = $decoded;
+            }
         }
+
+        $imagePath = !empty($uploaded) ? json_encode(array_merge($existing, $uploaded)) : $post['images'];
 
         $data = [
             'title'   => $this->request->getVar('title') ?? $post['title'],

@@ -85,7 +85,19 @@
                     <div class="card">
                         <?php
                         $images = json_decode($prop['images'] ?? '', true);
-                    $imgSrc = (!empty($images) && is_array($images)) ? $images[0] : '';
+                        if (!is_array($images)) {
+                            $images = [$images];
+                        }
+                        $imgSrc = '';
+                        if (!empty($images)) {
+                            foreach ($images as $image) {
+                                $path = is_string($image) ? $image : ($image['path'] ?? '');
+                                if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
+                                    $imgSrc = $path;
+                                    break;
+                                }
+                            }
+                        }
                     ?>
                         <!-- 2. ROUTED THE IMAGE AND VIEW LINKS SECURELY THROUGH BASE_URL() -->
                         <img src="<?= !empty($imgSrc) ? base_url(esc($imgSrc)) : base_url('uploads/placeholder.jpg') ?>" class="card-img" alt="Property Image">

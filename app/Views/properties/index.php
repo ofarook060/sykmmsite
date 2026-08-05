@@ -27,10 +27,22 @@
             <h3><?= esc($p['title']) ?></h3>
             
             <!-- Safe extraction of the first image from JSON array -->
-            <?php if (!empty($p['images'])): ?>
-                <?php $images = json_decode($p['images'], true); ?>
-                <?php if (is_array($images) && !empty($images)): ?>
-                    <img src="<?= base_url(esc($images[0])) ?>" alt="Main Image">
+            <?php if (!empty($p['images'])):
+                $images = json_decode($p['images'], true);
+                if (!is_array($images)) {
+                    $images = [$images];
+                }
+                $firstImage = '';
+                foreach ($images as $image) {
+                    $path = is_string($image) ? $image : ($image['path'] ?? '');
+                    if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
+                        $firstImage = $path;
+                        break;
+                    }
+                }
+            ?>
+                <?php if (!empty($firstImage)): ?>
+                    <img src="<?= base_url(esc($firstImage)) ?>" alt="Main Image">
                 <?php endif; ?>
             <?php endif; ?>
             

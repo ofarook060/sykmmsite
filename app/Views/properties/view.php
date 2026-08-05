@@ -55,25 +55,45 @@
         }
         ?>
 
-        <?php if (!empty($images)): ?>
+        <?php
+            $imageAttachments = array_values(array_filter($images, function ($item) {
+                return preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $item);
+            }));
+
+            $downloadAttachments = array_values(array_filter($images, function ($item) {
+                return !preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $item);
+            }));
+        ?>
+
+        <?php if (!empty($imageAttachments)): ?>
             <div class="carousel-container">
-                <?php foreach ($images as $index => $img): ?>
+                <?php foreach ($imageAttachments as $index => $img): ?>
                     <div class="carousel-slide">
                         <img src="<?= base_url(esc($img)) ?>" alt="Property Image <?= $index + 1 ?>">
                     </div>
                 <?php endforeach; ?>
 
-                <!-- Hide navigational UI features if there's only 1 photo -->
-                <?php if (count($images) > 1): ?>
+                <?php if (count($imageAttachments) > 1): ?>
                     <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
                     <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
 
                     <div class="carousel-dots">
-                        <?php foreach ($images as $index => $img): ?>
+                        <?php foreach ($imageAttachments as $index => $img): ?>
                             <span class="dot" onclick="setSlide(<?= $index ?>)"></span>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($downloadAttachments)): ?>
+            <div style="margin-top: 20px;">
+                <h3>Downloads</h3>
+                <ul style="padding-left: 20px;">
+                    <?php foreach ($downloadAttachments as $attachment): ?>
+                        <li><a href="<?= base_url(esc($attachment)) ?>" download><?= esc(basename($attachment)) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
         <?php endif; ?>
 

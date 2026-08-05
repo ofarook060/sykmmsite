@@ -20,6 +20,64 @@ class Properties extends BaseController
         return $input;
     }
 
+    private function normalizeAttachments($stored): array
+    {
+        if (empty($stored)) {
+            return [];
+        }
+
+        $decoded = json_decode($stored, true);
+        if (is_array($decoded)) {
+            return array_map(function ($item) {
+                if (is_string($item)) {
+                    return [
+                        'path' => $item,
+                        'name' => basename($item),
+                    ];
+                }
+                return [
+                    'path' => $item['path'] ?? '',
+                    'name' => $item['name'] ?? basename($item['path'] ?? ''),
+                ];
+            }, $decoded);
+        }
+
+        // Legacy string path support
+        return [[
+            'path' => $stored,
+            'name' => basename($stored),
+        ]];
+    }
+
+    private function moveUploadedFiles(array $fieldNames, string $targetDir, string $publicPrefix = '/uploads/'): array
+    {
+        $uploaded = [];
+        $files = $this->request->getFiles();
+
+        foreach ($fieldNames as $fieldName) {
+            if (! isset($files[$fieldName])) {
+                continue;
+            }
+
+            $field = $files[$fieldName];
+            $items = is_array($field) ? $field : [$field];
+
+            foreach ($items as $file) {
+                if (! $file->isValid() || $file->hasMoved()) {
+                    continue;
+                }
+                $newName = $file->getRandomName();
+                $file->move($targetDir, $newName);
+                $uploaded[] = [
+                    'path' => $publicPrefix . $newName,
+                    'name' => $file->getClientName(),
+                ];
+            }
+        }
+
+        return $uploaded;
+    }
+
     public function index()
     {
         $model = new PropertyModel();
@@ -70,35 +128,12 @@ class Properties extends BaseController
         }
 
         if ($this->request->is('post')) {
-            $uploadedImages = [];
+            $uploadedFiles = $this->moveUploadedFiles(['files', 'images', 'attachments'], ROOTPATH . 'public/uploads/', '/uploads/');
+            $existingFiles = $this->normalizeAttachments($property['images']);
 
-            // Check for multiple files from web form (images[])
-            if ($files = $this->request->getFiles()) {
-                if (isset($files['images']) && is_array($files['images'])) {
-                    foreach ($files['images'] as $img) {
-                        if ($img->isValid() && !$img->hasMoved()) {
-                            $newName = $img->getRandomName();
-                            $img->move(ROOTPATH . 'public/uploads/', $newName);
-                            $uploadedImages[] = '/uploads/' . $newName;
-                        }
-                    }
-                }
-            }
-
-            // Fallback check for single file from mobile API (images)
-            $singleFile = $this->request->getFile('images');
-            if ($singleFile && $singleFile->isValid() && !$singleFile->hasMoved()) {
-                $newName = $singleFile->getRandomName();
-                $singleFile->move(ROOTPATH . 'public/uploads/', $newName);
-                $uploadedImages[] = '/uploads/' . $newName;
-            }
-
-            // Merge with existing images if new ones were uploaded, otherwise keep old ones
-            if (!empty($uploadedImages)) {
-                $existing = !empty($property['images']) ? json_decode($property['images'], true) : [];
-                $imagePath = json_encode(array_merge(is_array($existing) ? $existing : [], $uploadedImages));
-            } else {
-                $imagePath = $property['images'];
+            $imagePath = $property['images'];
+            if (! empty($uploadedFiles)) {
+                $imagePath = json_encode(array_merge($existingFiles, $uploadedFiles));
             }
 
             $propertyData = [
@@ -150,30 +185,8 @@ class Properties extends BaseController
         // Changed form submission targeting from index logic to explicit save/store check
         if ($this->request->is('post')) {
             $model = new PropertyModel();
-            $uploadedImages = [];
-
-            // 1. Process multiple file uploads array from web form (images[])
-            if ($files = $this->request->getFiles()) {
-                if (isset($files['images']) && is_array($files['images'])) {
-                    foreach ($files['images'] as $img) {
-                        if ($img->isValid() && !$img->hasMoved()) {
-                            $newName = $img->getRandomName();
-                            $img->move(ROOTPATH . 'public/uploads/', $newName);
-                            $uploadedImages[] = '/uploads/' . $newName;
-                        }
-                    }
-                }
-            }
-
-            // 2. Process single file fallback from mobile applications (images)
-            $singleFile = $this->request->getFile('images');
-            if ($singleFile && $singleFile->isValid() && !$singleFile->hasMoved()) {
-                $newName = $singleFile->getRandomName();
-                $singleFile->move(ROOTPATH . 'public/uploads/', $newName);
-                $uploadedImages[] = '/uploads/' . $newName;
-            }
-
-            $imageJsonString = !empty($uploadedImages) ? json_encode($uploadedImages) : null;
+            $uploadedFiles = $this->moveUploadedFiles(['files', 'images', 'attachments'], ROOTPATH . 'public/uploads/', '/uploads/');
+            $imageJsonString = !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
 
             $propertyData = [
                 'title'          => $this->request->getVar('title'),

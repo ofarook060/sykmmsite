@@ -27,10 +27,57 @@
     <a href="/posts">&larr; Back to Posts</a>
     <h1><?= esc($post['title']) ?></h1>
 
-    <?php if (!empty($post['images'])): ?>
-        <div style="margin: 20px 0;">
-            <img src="<?= esc($post['images']) ?>" style="max-width:100%; height:auto;" alt="Blog Image">
-        </div>
+    <?php
+        $attachments = [];
+        if (!empty($post['images'])) {
+            $decoded = json_decode($post['images'], true);
+            if (is_array($decoded)) {
+                $attachments = $decoded;
+            } else {
+                $attachments = [
+                    [
+                        'path' => $post['images'],
+                        'name' => basename($post['images']),
+                    ],
+                ];
+            }
+        }
+    ?>
+
+    <?php if (!empty($attachments)): ?>
+        <?php $imageAttachments = array_filter($attachments, function ($attachment) {
+            $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+            return preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path);
+        }); ?>
+
+        <?php if (!empty($imageAttachments)): ?>
+            <div style="margin: 20px 0;">
+                <?php $firstImage = is_string(reset($imageAttachments)) ? reset($imageAttachments) : (reset($imageAttachments)['path'] ?? ''); ?>
+                <?php if (!empty($firstImage)): ?>
+                    <img src="<?= esc($firstImage) ?>" style="max-width:100%; height:auto;" alt="Blog Image">
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php $downloadAttachments = array_filter($attachments, function ($attachment) {
+            $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+            return !preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path);
+        }); ?>
+
+        <?php if (!empty($downloadAttachments)): ?>
+            <div style="margin: 20px 0;">
+                <h3>Downloads</h3>
+                <ul>
+                    <?php foreach ($downloadAttachments as $attachment): ?>
+                        <?php $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? ''); ?>
+                        <?php $name = is_string($attachment) ? basename($attachment) : ($attachment['name'] ?? basename($path)); ?>
+                        <?php if (!empty($path)): ?>
+                            <li><a href="<?= base_url(esc($path)) ?>" download><?= esc($name) ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 
     <div class="post-content">

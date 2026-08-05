@@ -25,11 +25,22 @@
             <label>Post Title</label>
             <input type="text" name="title" value="<?= esc($post['title']) ?>" required>
             <?php if ($post['images']): ?>
-                <label>Current Image</label>
-                <img src="<?= esc($post['images']) ?>" class="current-img" alt="Current Image">
+                <?php $attachments = json_decode($post['images'], true); ?>
+                <label>Current Attachments</label>
+                <ul style="margin-bottom: 15px; padding-left: 20px;">
+                    <?php if (is_array($attachments)): ?>
+                        <?php foreach ($attachments as $attachment): ?>
+                            <?php $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? ''); ?>
+                            <?php $name = is_string($attachment) ? basename($attachment) : ($attachment['name'] ?? basename($path)); ?>
+                            <?php if (!empty($path)): ?>
+                                <li><a href="<?= base_url(esc($path)) ?>" download><?= esc($name) ?></a></li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
             <?php endif; ?>
-            <label>Replace Image</label>
-            <input type="file" name="images" accept="image/*">
+            <label>Add More Files</label>
+            <input type="file" name="files[]" multiple>
             <label>Content</label>
             <textarea name="content"><?= esc($post['content']) ?></textarea>
             <button type="submit">Update Post</button>

@@ -90,8 +90,9 @@
         </div>
 
         <div class="form-group">
-            <label for="images">Upload Images</label>
-            <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+            <label for="files">Upload Files</label>
+            <input type="file" name="files[]" id="files" class="form-control" multiple>
+            <small>Upload one or more files. Images, PDFs and documents are supported.</small>
         </div>
 
         <div class="form-group">

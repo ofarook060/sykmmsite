@@ -75,22 +75,44 @@
             <label>Facebook Post URL (paste only the embed URL, not the full iframe code)</label>
             <input type="url" name="facebookPost" value="<?= old('facebookPost', $property['facebookPost']) ?>" placeholder="https://www.facebook.com/plugins/post.php?href=...">
 
-            <!-- 3. RENDER MULTIPLE CURRENT IMAGES IN A CONTAINER GRID -->
-            <?php if (!empty($property['images'])): ?>
-                <label>Current Images</label>
+            <!-- 3. RENDER MULTIPLE CURRENT ATTACHMENTS -->
+            <?php if (!empty($property['images'])):
+                $images = json_decode($property['images'], true);
+                if (!is_array($images)) {
+                    $images = [$images];
+                }
+            ?>
+                <label>Current Attachments</label>
                 <div class="image-preview-container">
-                    <?php $images = json_decode($property['images'], true); ?>
-                    <?php if (is_array($images)): ?>
-                        <?php foreach ($images as $img): ?>
-                            <img src="<?= base_url(esc($img)) ?>" class="current-img" alt="Current Image">
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php foreach ($images as $attachment): ?>
+                        <?php
+                            $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+                            $name = is_string($attachment) ? basename($attachment) : ($attachment['name'] ?? basename($path));
+                            $isImage = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path);
+                        ?>
+                        <?php if ($isImage): ?>
+                            <img src="<?= base_url(esc($path)) ?>" class="current-img" alt="Current Image">
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </div>
+
+                <ul style="margin-bottom: 15px; padding-left: 20px;">
+                    <?php foreach ($images as $attachment): ?>
+                        <?php
+                            $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+                            $name = is_string($attachment) ? basename($attachment) : ($attachment['name'] ?? basename($path));
+                            $isImage = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path);
+                        ?>
+                        <?php if (!empty($path) && ! $isImage): ?>
+                            <li><a href="<?= base_url(esc($path)) ?>" download><?= esc($name) ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
             <?php endif; ?>
 
-            <!-- 4. ALLOW ADDING MULTIPLE ADDITIONAL IMAGES -->
-            <label>Add More Images</label>
-            <input type="file" name="images[]" accept="image/*" multiple>
+            <!-- 4. ALLOW ADDING MULTIPLE ADDITIONAL FILES -->
+            <label>Add More Files</label>
+            <input type="file" name="files[]" multiple>
 
             <button type="submit">Update Property</button>
         </form>

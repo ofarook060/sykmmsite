@@ -23,8 +23,9 @@
             <?= csrf_field() ?>
             <label>Post Title</label>
             <input type="text" name="title" placeholder="Post title" required>
-            <label>Featured Image</label>
-            <input type="file" name="blog_image" accept="image/*">
+            <label>Upload Files</label>
+            <input type="file" name="files[]" multiple>
+            <small>Upload one or more files for this post, such as images or documents.</small>
             <label>Content</label>
             <textarea name="content" placeholder="Write your post content here..."></textarea>
             <button type="submit">Publish Post</button>

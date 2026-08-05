@@ -24,10 +24,27 @@
         <p>No posts available yet.</p>
     <?php else: ?>
         <?php foreach ($posts as $post): ?>
+            <?php
+                $postImages = [];
+                if (!empty($post['images'])) {
+                    $decodedPostImages = json_decode($post['images'], true);
+                    if (is_array($decodedPostImages)) {
+                        foreach ($decodedPostImages as $attachment) {
+                            $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+                            if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
+                                $postImages[] = $path;
+                            }
+                        }
+                    } elseif (is_string($post['images'])) {
+                        $postImages[] = $post['images'];
+                    }
+                }
+                $firstPostImage = !empty($postImages) ? $postImages[0] : '';
+            ?>
             <div class="post-item">
                 <h2><?= esc($post['title']) ?></h2>
-                <?php if (!empty($post['images'])): ?>
-                    <img src="<?= esc($post['images']) ?>" alt="Blog Image">
+                <?php if (!empty($firstPostImage)): ?>
+                    <img src="<?= esc($firstPostImage) ?>" alt="Blog Image">
                 <?php endif; ?>
                 <p><?= character_limiter(esc($post['content']), 150) ?></p>
                 <a href="/post/<?= $post['id'] ?>">Read Full Post &rarr;</a>

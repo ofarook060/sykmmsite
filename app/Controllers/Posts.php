@@ -9,6 +9,67 @@ class Posts extends BaseController
 {
     use ResponseTrait;
 
+    private function normalizeAttachments($stored): array
+    {
+        if (empty($stored)) {
+            return [];
+        }
+
+        $decoded = json_decode($stored, true);
+        if (is_array($decoded)) {
+            return array_map(function ($item) {
+                if (is_string($item)) {
+                    return [
+                        'path' => $item,
+                        'name' => basename($item),
+                    ];
+                }
+                return [
+                    'path' => $item['path'] ?? '',
+                    'name' => $item['name'] ?? basename($item['path'] ?? ''),
+                ];
+            }, $decoded);
+        }
+
+        return [[
+            'path' => $stored,
+            'name' => basename($stored),
+        ]];
+    }
+
+    private function moveUploadedFiles(array $fieldNames, string $targetDir, string $publicPrefix = '/uploads/'): array
+    {
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $uploaded = [];
+        $files = $this->request->getFiles();
+
+        foreach ($fieldNames as $fieldName) {
+            if (! isset($files[$fieldName])) {
+                continue;
+            }
+
+            $field = $files[$fieldName];
+            $items = is_array($field) ? $field : [$field];
+
+            foreach ($items as $file) {
+                if (! $file->isValid() || $file->hasMoved()) {
+                    continue;
+                }
+                $newName = $file->getRandomName();
+                $file->move($targetDir, $newName);
+                $uploaded[] = [
+                    'path' => $publicPrefix . $newName,
+                    'name' => $file->getClientName(),
+                ];
+            }
+        }
+
+        return $uploaded;
+    }
+
     // Public: List all blog posts
     public function index()
     {
@@ -47,17 +108,8 @@ class Posts extends BaseController
 
         if ($this->request->is('post')) {
             $model = new PostModel();
-
-            // New Image handling logic for mobile multipart/form-data
-            $imagePath = null;
-            $file = $this->request->getFile('images'); // Matches key in Mobile App's FormData
-
-            if ($file && $file->isValid() && !$file->hasMoved()) {
-                $newName = $file->getRandomName();
-                $targetPath = ROOTPATH . 'public/uploads/blog/';
-                $file->move($targetPath, $newName);
-                $imagePath = '/uploads/blog/' . $newName;
-            }
+            $uploadedFiles = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
+            $imagePath = !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
 
             $postData = [
                 'title'   => $this->request->getVar('title'),
@@ -94,15 +146,9 @@ class Posts extends BaseController
         }
 
         if ($this->request->is('post')) {
-            $imagePath = $post['images']; // Keep existing
-            $file = $this->request->getFile('images');
-
-            if ($file && $file->isValid() && !$file->hasMoved()) {
-                $newName = $file->getRandomName();
-                $targetPath = ROOTPATH . 'public/uploads/blog/';
-                $file->move($targetPath, $newName);
-                $imagePath = '/uploads/blog/' . $newName;
-            }
+            $existingFiles = $this->normalizeAttachments($post['images']);
+            $uploadedFiles = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
+            $imagePath = !empty($uploadedFiles) ? json_encode(array_merge($existingFiles, $uploadedFiles)) : $post['images'];
 
             $postData = [
                 'id'      => $id,
@@ -142,15 +188,9 @@ class Posts extends BaseController
             return $this->failNotFound('Post not found');
         }
 
-        $imagePath = $post['images']; // Keep existing
-        $file = $this->request->getFile('images');
-
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            $targetPath = ROOTPATH . 'public/uploads/blog/';
-            $file->move($targetPath, $newName);
-            $imagePath = '/uploads/blog/' . $newName;
-        }
+        $existingFiles = $this->normalizeAttachments($post['images']);
+        $uploadedFiles = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
+        $imagePath = !empty($uploadedFiles) ? json_encode(array_merge($existingFiles, $uploadedFiles)) : $post['images'];
 
         $postData = [
             'id'      => $id,
