@@ -24,7 +24,6 @@ phpunit.xml
 .DS_Store
 Thumbs.db
 
-
 #-------------------------
 # Operating Specific Junk Files
 #-------------------------
@@ -136,3 +135,7 @@ _modules/*
 /results/
 /phpunit.xml
 INFO.md
+
+# CLIO (managed automatically)
+.clio/*
+!.clio/instructions.md

@@ -121,7 +121,23 @@
             <?php else: ?>
                 <?php foreach ($latest_posts as $post): ?>
                     <div class="card">
-                        <?php $imgSrc = !empty($post['images']) ? $post['images'] : ''; ?>
+                        <?php
+                        $imgSrc = '';
+                        if (!empty($post['images'])) {
+                            $decodedImages = json_decode($post['images'], true);
+                            if (is_array($decodedImages)) {
+                                foreach ($decodedImages as $attachment) {
+                                    $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? '');
+                                    if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
+                                        $imgSrc = $path;
+                                        break;
+                                    }
+                                }
+                            } elseif (is_string($post['images'])) {
+                                $imgSrc = $post['images'];
+                            }
+                        }
+                        ?>
                         <img src="<?= !empty($imgSrc) ? base_url(esc($imgSrc)) : base_url('uploads/placeholder.jpg') ?>" class="card-img" alt="Blog Image">
                         <div class="card-body">
                             <h3 class="card-title"><?= esc($post['title']) ?></h3>
