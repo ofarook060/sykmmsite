@@ -14,6 +14,12 @@
         button:hover { background: #A87C17; }
         h1 { margin-top: 0; color: #032F2E; }
         .current-img { max-width: 100px; border-radius: 4px; margin-bottom: 15px; }
+        .attachment-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .attachment-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+        .attachment-item a { color: #032F2E; word-break: break-all; }
+        .attachment-remove { display: flex; align-items: center; gap: 5px; margin-left: auto; font-size: 0.85rem; color: #dc3545; cursor: pointer; white-space: nowrap; }
+        .attachment-remove input { margin: 0; }
+        .attachment-hint { font-size: 0.85rem; color: #dc3545; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -27,17 +33,26 @@
             <?php if ($post['images']): ?>
                 <?php $attachments = json_decode($post['images'], true); ?>
                 <label>Current Attachments</label>
-                <ul style="margin-bottom: 15px; padding-left: 20px;">
-                    <?php if (is_array($attachments)): ?>
+                <?php if (is_array($attachments) && !empty($attachments)): ?>
+                    <ul style="margin-bottom: 5px; padding-left: 0; list-style: none;">
                         <?php foreach ($attachments as $attachment): ?>
                             <?php $path = is_string($attachment) ? $attachment : ($attachment['path'] ?? ''); ?>
                             <?php $name = is_string($attachment) ? basename($attachment) : ($attachment['name'] ?? basename($path)); ?>
                             <?php if (!empty($path)): ?>
-                                <li><a href="<?= base_url(esc($path)) ?>" download><?= esc($name) ?></a></li>
+                                <li class="attachment-item">
+                                    <?php if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)): ?>
+                                        <img src="<?= base_url(esc($path)) ?>" alt="<?= esc($name) ?>">
+                                    <?php endif; ?>
+                                    <a href="<?= base_url(esc($path)) ?>" download><?= esc($name) ?></a>
+                                    <label class="attachment-remove">
+                                        <input type="checkbox" name="remove[]" value="<?= esc($path) ?>"> Remove
+                                    </label>
+                                </li>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </ul>
+                    </ul>
+                    <p class="attachment-hint">Tick the files you want to remove, then save.</p>
+                <?php endif; ?>
             <?php endif; ?>
             <label>Add More Files</label>
             <input type="file" name="files[]" multiple>

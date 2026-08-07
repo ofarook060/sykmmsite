@@ -95,6 +95,16 @@ Vagrantfile
 # Composer
 #-------------------------
 vendor/
+# Excluded directories for sync
+property/
+post/
+# Generated uploads by admin
+public/uploads/blog/
+public/uploads/properties/
+
+#-------------------------
+# IDE / Development Files
+#-------------------------
 
 #-------------------------
 # IDE / Development Files

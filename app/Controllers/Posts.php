@@ -147,8 +147,23 @@ class Posts extends BaseController
 
         if ($this->request->is('post')) {
             $existingFiles = $this->normalizeAttachments($post['images']);
+
+            $removePaths = $this->request->getPost('remove');
+            if (is_array($removePaths) && !empty($removePaths)) {
+                $existingFiles = array_values(array_filter($existingFiles, function ($item) use ($removePaths) {
+                    return !in_array($item['path'], $removePaths, true);
+                }));
+                foreach ($removePaths as $removePath) {
+                    $absPath = ROOTPATH . 'public' . $removePath;
+                    if (is_file($absPath)) {
+                        unlink($absPath);
+                    }
+                }
+            }
+
             $uploadedFiles = $this->moveUploadedFiles(['files', 'attachments', 'images'], ROOTPATH . 'public/uploads/blog/', '/uploads/blog/');
-            $imagePath = !empty($uploadedFiles) ? json_encode(array_merge($existingFiles, $uploadedFiles)) : $post['images'];
+            $mergedFiles = array_merge($existingFiles, $uploadedFiles);
+            $imagePath = !empty($mergedFiles) ? json_encode($mergedFiles) : null;
 
             $postData = [
                 'id'      => $id,

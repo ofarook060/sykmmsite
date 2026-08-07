@@ -96,7 +96,22 @@ class Posts extends ResourceController
             }
         }
 
-        $imagePath = !empty($uploaded) ? json_encode(array_merge($existing, $uploaded)) : $post['images'];
+        $removePaths = $this->request->getPost('remove');
+        if (is_array($removePaths) && !empty($removePaths)) {
+            $existing = array_values(array_filter($existing, function ($item) use ($removePaths) {
+                $path = is_string($item) ? $item : ($item['path'] ?? '');
+                return !in_array($path, $removePaths, true);
+            }));
+            foreach ($removePaths as $removePath) {
+                $absPath = ROOTPATH . 'public' . $removePath;
+                if (is_file($absPath)) {
+                    unlink($absPath);
+                }
+            }
+        }
+
+        $merged = array_merge($existing, $uploaded);
+        $imagePath = !empty($merged) ? json_encode($merged) : null;
 
         $data = [
             'title'   => $this->request->getVar('title') ?? $post['title'],
